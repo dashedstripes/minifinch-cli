@@ -1,107 +1,109 @@
-var groups = {
+const constants = require('./constants');
+
+const groups = {
   title: 'Groups',
-  name: 'groups',
+  name: constants.groups,
   dependencies: []
 };
 
-var organizations = {
+const organizations = {
   title: 'Organizations',
-  name: 'organizations',
+  name: constants.organizations,
   dependencies: []
 };
 
-var brands = {
+const brands = {
   title: 'Brands',
-  name: 'brands',
+  name: constants.brands,
   dependencies: []
 };
 
-var ticket_fields = {
+const ticket_fields = {
   title: 'Ticket Fields',
-  name: 'ticket_fields',
+  name: constants.ticket_fields,
   dependencies: []
 };
 
-var user_fields = {
+const user_fields = {
   title: 'User Fields',
-  name: 'user_fields',
+  name: constants.user_fields,
   dependencies: []
 };
 
-var organization_fields = {
+const organization_fields = {
   title: 'Organization Fields',
-  name: 'organization_fields',
+  name: constants.organization_fields,
   dependencies: []
 };
 
-var ticket_forms = {
+const ticket_forms = {
   title: 'Ticket Forms',
-  name: 'ticket_forms',
+  name: constants.ticket_forms,
   dependencies: [
-    'ticket_fields'
+    constants.ticket_fields
   ]
 }
 
-var users = {
+const users = {
   title: 'Users',
-  name: 'users',
+  name: constants.users,
   dependencies: [
-    'user_fields'
+    constants.user_fields
   ]
 }
 
-var triggers = {
+const triggers = {
   title: 'Triggers',
-  name: 'triggers',
+  name: constants.triggers,
   dependencies: [
-    'ticket_fields',
-    'brands',
-    'groups',
-    'organizations'
+    constants.ticket_fields,
+    constants.brands,
+    constants.groups,
+    constants.organizations
   ]
 }
 
-var macros = {
+const macros = {
   title: 'Macros',
-  name: 'macros',
+  name: constants.macros,
   dependencies: [
-    'ticket_fields',
-    'brands',
-    'groups',
-    'organizations'
+    constants.ticket_fields,
+    constants.brands,
+    constants.groups,
+    constants.organizations
   ]
 };
 
-var views = {
+const views = {
   title: 'Views',
-  name: 'views',
+  name: constants.views,
   dependencies: [
-    'ticket_fields',
-    'brands',
-    'groups',
-    'organizations'
+    constants.ticket_fields,
+    constants.brands,
+    constants.groups,
+    constants.organizations
   ]
 }
 
-var automations = {
+const automations = {
   title: 'Automations',
-  name: 'automations',
+  name: constants.automations,
   dependencies: [
-    'ticket_fields',
-    'brands',
-    'groups',
-    'organizations'
+    constants.ticket_fields,
+    constants.brands,
+    constants.groups,
+    constants.organizations
   ]
 }
 
-var sla = {
+const sla = {
   title: 'SLA',
-  name: 'sla',
+  name: constants.sla,
   dependencies: [
-    'ticket_fields',
-    'brands',
-    'groups',
-    'organizations'
+    constants.ticket_fields,
+    constants.brands,
+    constants.groups,
+    constants.organizations
   ]
 }
 
