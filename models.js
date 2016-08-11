@@ -9,7 +9,9 @@ const groups = {
 const organizations = {
   title: 'Organizations',
   name: constants.organizations,
-  dependencies: []
+  dependencies: [
+    constants.organization_fields
+  ]
 };
 
 const brands = {
