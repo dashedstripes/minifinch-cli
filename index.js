@@ -4,7 +4,6 @@ const models = require('./models');
 let selectedObjects = [];
 let objectsToCreate = [];
 
-
 /**
  * Ask user for objects to clone,
  * push all selected objects to the selectedObjects array
@@ -31,9 +30,10 @@ selectedObjects.forEach(function(object){
     if(object.dependencies.length != 0) {
       // Loop through each dependency
       object.dependencies.forEach(function(dependency){
+        var currentDependency = findObjectFromDependency(dependency);
         // if dependency is not in objectsToCreate
-        if(objectsToCreate.indexOf(dependency) == -1){
-          objectsToCreate.push(findObjectFromDependency(dependency));
+        if(objectsToCreate.indexOf(currentDependency) == -1){
+          objectsToCreate.push(currentDependency);
         }
       });
       objectsToCreate.push(object);
