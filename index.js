@@ -79,12 +79,54 @@ objectsToCreate.forEach(function(object){
     toClone = JSON.parse(result)[object.name];
   }).then(function(){
     toClone.forEach(function(objectToClone){
-      zdrequest(accountB, object, 'POST', objectToClone);
+      /**
+       * If the object has any dependencies
+       */
+      if(object.dependencies.length > 0){
+        // Loop through each dependency
+        object.dependencies.forEach(function(dependency){
+          findOriginalDependency(dependency, objectToClone).then(function(result){
+            console.log(result);
+          });
+        }.bind(this));
+      }else{
+        // zdrequest(accountB, object, 'POST', objectToClone);
+      }
     });
   }).then(function(){
     console.log(`${object.title} cloned!`);
   });
 });
+
+function findOriginalDependency(uri, object) {
+  if(uri == 'ticket_fields') {
+    new Promise(function(fufill, reject){
+      var count = 0;
+      var originalDependencies = [];
+
+      object.ticket_field_ids.forEach(function(id){
+        var options = {
+          headers: {
+            Authorization: 'Basic ' + new Buffer(accountA.email + '/token:' + accountA.token).toString('base64')
+          },
+          url: `https://${accountA.subdomain}.zendesk.com/api/v2/ticket_fields/` + id + '.json',
+          method: 'GET'
+        };
+
+        request(options, function(err, res, body){
+          if (err) { reject(err); }
+
+          if(count == (object.ticket_field_ids.length - 1)){
+            fufill(originalDependencies);
+          }
+
+          originalDependencies.push(JSON.parse(body).ticket_field);
+          count++;
+        }.bind(this));
+      });
+    });
+  }
+};
 
 /**
  * Function to create a request to zendesk

@@ -117,17 +117,17 @@ const sla = {
 }
 
 module.exports = [
-  groups,
-  organizations,
-  brands,
-  ticket_fields,
-  user_fields,
-  organization_fields,
+  // groups,
+  // organizations,
+  // brands,
+  // ticket_fields,
+  // user_fields,
+  // organization_fields,
   ticket_forms,
-  users,
-  triggers,
-  macros,
-  views,
-  automations,
-  sla
+  // users,
+  // triggers,
+  // macros,
+  // views,
+  // automations,
+  // sla
 ]
