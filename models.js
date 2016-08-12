@@ -29,15 +29,16 @@ const organizations = {
   ]
 };
 
-const brands = {
-  title: 'Brands',
-  name: constants.brands,
+const organization_fields = {
+  title: 'Organization Fields',
+  name: 'organization_fields',
+  singular: 'organization_field',
   dependencies: []
 };
 
-const organization_fields = {
-  title: 'Organization Fields',
-  name: constants.organization_fields,
+const brands = {
+  title: 'Brands',
+  name: constants.brands,
   dependencies: []
 };
 
