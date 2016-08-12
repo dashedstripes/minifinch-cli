@@ -76,13 +76,13 @@ function findObjectFromDependency(dependency) {
 objectsToCreate.forEach(function(object){
   var toClone = [];
   zdrequest(accountA, object, 'GET').then(function(result){
-    toClone = result[object.name];
+    toClone = JSON.parse(result)[object.name];
   }).then(function(){
     toClone.forEach(function(objectToClone){
-      zdrequest(accountB, object, 'POST', objectToClone).then(function(){
-        console.log(`${object.title} cloned!`);
-      });
+      zdrequest(accountB, object, 'POST', objectToClone);
     });
+  }).then(function(){
+    console.log(`${object.title} cloned!`);
   });
 });
 

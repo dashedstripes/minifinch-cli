@@ -7,6 +7,13 @@ const groups = {
   dependencies: []
 };
 
+const ticket_fields = {
+  title: 'Ticket Fields',
+  name: 'ticket_fields',
+  singular: 'ticket_field',
+  dependencies: []
+};
+
 const organizations = {
   title: 'Organizations',
   name: constants.organizations,
@@ -18,12 +25,6 @@ const organizations = {
 const brands = {
   title: 'Brands',
   name: constants.brands,
-  dependencies: []
-};
-
-const ticket_fields = {
-  title: 'Ticket Fields',
-  name: constants.ticket_fields,
   dependencies: []
 };
 
