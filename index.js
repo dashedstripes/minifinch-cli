@@ -123,22 +123,40 @@ function zdrequest(account, object, method, data) {
 
 function createNewObject(account, object, data) {
   if(object.name == 'ticket_forms'){
-    zdrequest(account, object, 'GET').then(function(result) {
-      // Get original ticket field ids
-      return JSON.parse(result).ticket_forms;
-    }).then(function(originalTicketForms){
-      originalTicketForms.forEach(function(currentTicketForm){
-        // Loop through each of the original ids
-        currentTicketForm.ticket_field_ids.forEach(function(currentTicketFieldId){
-          /**
-           * Make a request to account A to create an array of the original
-           * ticket field names
-           */
-          console.log(currentTicketFieldId);
-        });
-      });
-    });
+    createTicketForms(account, object, data);
   }else{
     // zdrequest(account, object, 'POST', data);
   }
 };
+
+function createTicketForms(account, object, data) {
+  // Placeholder for all the original ticket fields
+  var originalTicketFields = [];
+  // Overriding account with accountA
+  zdrequest(accountA, object, 'GET').then(function(result) {
+    // Get original ticket field ids
+    return JSON.parse(result).ticket_forms;
+  }).then(function(originalTicketForms){
+    originalTicketForms.forEach(function(currentTicketForm){
+      // Loop through each of the original ids
+      currentTicketForm.ticket_field_ids.forEach(function(currentTicketFieldId){
+        /**
+         * Make a request to account A to create an array of the original
+         * ticket field names
+         */
+        var options = {
+          headers: {
+            Authorization: 'Basic ' + new Buffer(accountA.email + '/token:' + accountA.token).toString('base64')
+          },
+          url: `https://${accountA.subdomain}.zendesk.com/api/v2/ticket_fields/${currentTicketFieldId}.json`,
+          method: 'GET'
+        };
+        request(options, function(err, res, body){
+          if (err) { console.log(err); }
+          // body is all of the found ticket fields from account A
+          originalTicketFields.push(JSON.parse(body).ticket_field.raw_title);
+        });
+      });
+    });
+  });
+}
