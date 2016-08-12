@@ -1,3 +1,4 @@
+const Promise = require('promise');
 const readlineSync = require('readline-sync');
 const request = require('request');
 const models = require('./models');
@@ -74,7 +75,9 @@ function findObjectFromDependency(dependency) {
 
 objectsToCreate.forEach(function(object){
   var toClone;
-  zdrequest(accountA, object, 'GET');
+  zdrequest(accountA, object, 'GET').then(function(result){
+    console.log(result);
+  });
 });
 
 /**
@@ -82,18 +85,20 @@ objectsToCreate.forEach(function(object){
  */
 
 function zdrequest(account, object, method) {
-  var options = {
-    url: `https://${account.subdomain}.zendesk.com/api/v2/` + object.name + '.json',
-    headers: {
-      Authorization: 'Basic ' + new Buffer(account.email + '/token:' + account.token).toString('base64')
-    },
-    method: method,
-    forever: true
-  };
+  return new Promise(function(fufill, reject){
+    var options = {
+      url: `https://${account.subdomain}.zendesk.com/api/v2/` + object.name + '.json',
+      headers: {
+        Authorization: 'Basic ' + new Buffer(account.email + '/token:' + account.token).toString('base64')
+      },
+      method: method,
+      forever: true
+    };
 
-  request(options, function(err, res, body){
-    if (err) { console.log(err); }
-    console.log(JSON.parse(body));
+    request(options, function(err, res, body){
+      if (err) { reject(err); }
+      fufill(JSON.parse(body));
+    });
   });
 }
 
