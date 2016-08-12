@@ -67,6 +67,13 @@ function findObjectFromDependency(dependency) {
   }
 }
 
-console.log('Objects to create:');
-console.log(objectsToCreate);
+/**
+ * Using objectsToCreate, clone chosen objects...
+ */
+
+objectsToCreate.forEach(function(object){
+  var toClone;
+  
+  console.log(object);
+});
 
