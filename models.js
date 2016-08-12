@@ -21,6 +21,14 @@ const user_fields = {
   dependencies: []
 };
 
+
+const organization_fields = {
+  title: 'Organization Fields',
+  name: 'organization_fields',
+  singular: 'organization_field',
+  dependencies: []
+};
+
 const organizations = {
   title: 'Organizations',
   name: 'organizations',
@@ -30,26 +38,20 @@ const organizations = {
   ]
 };
 
-const organization_fields = {
-  title: 'Organization Fields',
-  name: 'organization_fields',
-  singular: 'organization_field',
-  dependencies: []
-};
+const ticket_forms = {
+  title: 'Ticket Forms',
+  name: 'ticket_forms',
+  singular: 'ticket_form',
+  dependencies: [
+    'ticket_fields'
+  ]
+}
 
 const brands = {
   title: 'Brands',
   name: constants.brands,
   dependencies: []
 };
-
-const ticket_forms = {
-  title: 'Ticket Forms',
-  name: constants.ticket_forms,
-  dependencies: [
-    constants.ticket_fields
-  ]
-}
 
 const users = {
   title: 'Users',

@@ -79,7 +79,7 @@ objectsToCreate.forEach(function(object){
     toClone = JSON.parse(result)[object.name];
   }).then(function(){
     toClone.forEach(function(objectToClone){
-      zdrequest(accountB, object, 'POST', objectToClone);
+      createNewObject(accountB, object, objectToClone);
     });
   }).then(function(){
     console.log(`${object.title} cloned!`);
@@ -94,7 +94,6 @@ function zdrequest(account, object, method, data) {
   return new Promise(function(fufill, reject){
     var dataToSend = {};
     var options = {
-      url: `https://${account.subdomain}.zendesk.com/api/v2/` + object.name + '.json',
       headers: {
         Authorization: 'Basic ' + new Buffer(account.email + '/token:' + account.token).toString('base64')
       },
@@ -102,9 +101,11 @@ function zdrequest(account, object, method, data) {
     };
 
     if(method == 'GET') {
+      options.url = `https://${account.subdomain}.zendesk.com/api/v2/` + object.name + '.json';
       options.forever = true;
     }else if(method == 'POST') {
       dataToSend[object.singular] = data;
+      options.url = `https://${account.subdomain}.zendesk.com/api/v2/` + object.name + '.json';
       options.json = dataToSend;
     }
 
@@ -113,5 +114,31 @@ function zdrequest(account, object, method, data) {
       fufill(body);
     });
   });
-}
+};
 
+/**
+ * Create a new object from account A to account B.
+ * Provides logic for complicated objects with dependencies.
+ */
+
+function createNewObject(account, object, data) {
+  if(object.name == 'ticket_forms'){
+    zdrequest(account, object, 'GET').then(function(result) {
+      // Get original ticket field ids
+      return JSON.parse(result).ticket_forms;
+    }).then(function(originalTicketForms){
+      originalTicketForms.forEach(function(currentTicketForm){
+        // Loop through each of the original ids
+        currentTicketForm.ticket_field_ids.forEach(function(currentTicketFieldId){
+          /**
+           * Make a request to account A to create an array of the original
+           * ticket field names
+           */
+          console.log(currentTicketFieldId);
+        });
+      });
+    });
+  }else{
+    // zdrequest(account, object, 'POST', data);
+  }
+};
