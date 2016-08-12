@@ -23,9 +23,10 @@ const user_fields = {
 
 const organizations = {
   title: 'Organizations',
-  name: constants.organizations,
+  name: 'organizations',
+  singular: 'organization',
   dependencies: [
-    constants.organization_fields
+    'organization_fields'
   ]
 };
 
