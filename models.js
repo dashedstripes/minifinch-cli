@@ -2,7 +2,8 @@ const constants = require('./constants');
 
 const groups = {
   title: 'Groups',
-  name: constants.groups,
+  name: 'groups',
+  singular: 'group',
   dependencies: []
 };
 

@@ -74,9 +74,15 @@ function findObjectFromDependency(dependency) {
  */
 
 objectsToCreate.forEach(function(object){
-  var toClone;
+  var toClone = [];
   zdrequest(accountA, object, 'GET').then(function(result){
-    console.log(result);
+    toClone = result[object.name];
+  }).then(function(){
+    toClone.forEach(function(objectToClone){
+      zdrequest(accountB, object, 'POST', objectToClone).then(function(){
+        console.log(`${object.title} cloned!`);
+      });
+    });
   });
 });
 
@@ -84,20 +90,27 @@ objectsToCreate.forEach(function(object){
  * Function to create a request to zendesk
  */
 
-function zdrequest(account, object, method) {
+function zdrequest(account, object, method, data) {
   return new Promise(function(fufill, reject){
+    var dataToSend = {};
     var options = {
       url: `https://${account.subdomain}.zendesk.com/api/v2/` + object.name + '.json',
       headers: {
         Authorization: 'Basic ' + new Buffer(account.email + '/token:' + account.token).toString('base64')
       },
-      method: method,
-      forever: true
+      method: method
     };
+
+    if(method == 'GET') {
+      options.forever = true;
+    }else if(method == 'POST') {
+      dataToSend[object.singular] = data;
+      options.json = dataToSend;
+    }
 
     request(options, function(err, res, body){
       if (err) { reject(err); }
-      fufill(JSON.parse(body));
+      fufill(body);
     });
   });
 }
