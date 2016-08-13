@@ -80,15 +80,85 @@ objectsToCreate.forEach(function(object){
   }).then(function(){
     toClone.forEach(function(objectToClone){
       /**
-       * If the object has any dependencies
+       * Logic for cloning a ticket form
        */
-      if(object.dependencies.length > 0){
-        // Loop through each dependency
-        object.dependencies.forEach(function(dependency){
-          findOriginalDependency(dependency, objectToClone).then(function(result){
-            console.log(result);
+      if(object.name == 'ticket_forms'){
+        /**
+         * Array to store all the names of the ticket fields
+         * found from accountA
+         */
+        var foundTicketFields = [];
+
+        // Array to store the new ticket field ids for the current form
+        var newTicketFields = [];
+
+        // Get all the ticket_field_ids from the ticket form
+        objectToClone.ticket_field_ids.forEach(function(ticketFieldId){
+          /**
+           * Loop through each ticket field id and make a request to accountA
+           * with the ticket field id to get the name of the field
+           * then put them into an array (foundTicketFields)
+           */
+
+          var options = {
+            headers: {
+              Authorization: 'Basic ' + new Buffer(accountA.email + '/token:' + accountA.token).toString('base64')
+            },
+            url: `https://${accountA.subdomain}.zendesk.com/api/v2/ticket_fields/${ticketFieldId}.json`,
+            method: 'GET'
+          };
+
+          request(options, function(err, res, body){
+            if (err) { console.log(err); }
+            foundTicketFields.push(JSON.parse(body).ticket_field.raw_title);
           });
-        }.bind(this));
+
+        });
+
+        // Get all the ticket fields from accountB
+
+        var options = {
+          headers: {
+            Authorization: 'Basic ' + new Buffer(accountB.email + '/token:' + accountB.token).toString('base64')
+          },
+          url: `https://${accountB.subdomain}.zendesk.com/api/v2/ticket_fields.json`,
+          method: 'GET'
+        };
+
+        request(options, function(err, res, body){
+          if (err) { console.log(err); }
+          // Loop through all the ticket fields in accountB
+          JSON.parse(body).forEach(function(ticketField){
+          /**
+           * Using the names of fields now stored in foundTicketFields,
+           * find where the currentTicketField in accountB matches
+           */
+
+          foundTicketFields.forEach(function(foundTicketField){
+            /**
+             * When a name from foundTicketFields matches the name from 
+             * the currentTicketField, get the id from currentTicketField 
+             * and add it to newTicketFields
+             */
+            if(ticketField.raw_title == foundTicketField) {
+              newTicketFields.push(ticketField.id);
+            }
+          });
+
+          /**
+           * Once all is complete, set the ticket forms ticket_field_ids
+           * property to the newTicketFields array
+           */
+
+          object.ticket_field_ids = newTicketFields;
+
+          // Create the ticket form using zdrequest
+          
+          // zdrequest(accountB, object, 'POST', objectToClone);
+          });
+        });
+
+        // 
       }else{
         // zdrequest(accountB, object, 'POST', objectToClone);
       }
@@ -97,36 +167,6 @@ objectsToCreate.forEach(function(object){
     console.log(`${object.title} cloned!`);
   });
 });
-
-function findOriginalDependency(uri, object) {
-  if(uri == 'ticket_fields') {
-    new Promise(function(fufill, reject){
-      var count = 0;
-      var originalDependencies = [];
-
-      object.ticket_field_ids.forEach(function(id){
-        var options = {
-          headers: {
-            Authorization: 'Basic ' + new Buffer(accountA.email + '/token:' + accountA.token).toString('base64')
-          },
-          url: `https://${accountA.subdomain}.zendesk.com/api/v2/ticket_fields/` + id + '.json',
-          method: 'GET'
-        };
-
-        request(options, function(err, res, body){
-          if (err) { reject(err); }
-
-          if(count == (object.ticket_field_ids.length - 1)){
-            fufill(originalDependencies);
-          }
-
-          originalDependencies.push(JSON.parse(body).ticket_field);
-          count++;
-        }.bind(this));
-      });
-    });
-  }
-};
 
 /**
  * Function to create a request to zendesk
