@@ -83,10 +83,7 @@ objectsToCreate.forEach(function(object){
        * Logic for cloning a ticket form
        */
       if(object.name == 'ticket_forms'){
-        /**
-         * Array to store all the names of the ticket fields
-         * found from accountA
-         */
+        // Array to store all the names of the ticket fields found from accountA
         var foundTicketFields = [];
 
         // Array to store the new ticket field ids for the current form
@@ -153,7 +150,7 @@ objectsToCreate.forEach(function(object){
           object.ticket_field_ids = newTicketFields;
 
           // Create the ticket form using zdrequest
-          
+
           // zdrequest(accountB, object, 'POST', objectToClone);
           });
         });
