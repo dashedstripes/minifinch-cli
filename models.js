@@ -120,7 +120,7 @@ module.exports = [
   // groups,
   // organizations,
   // brands,
-  // ticket_fields,
+  ticket_fields,
   // user_fields,
   // organization_fields,
   ticket_forms,

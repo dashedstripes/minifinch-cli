@@ -109,7 +109,6 @@ objectsToCreate.forEach(function(object){
             if (err) { console.log(err); }
             foundTicketFields.push(JSON.parse(body).ticket_field.raw_title);
           });
-
         });
 
         // Get all the ticket fields from accountB
@@ -125,7 +124,7 @@ objectsToCreate.forEach(function(object){
         request(options, function(err, res, body){
           if (err) { console.log(err); }
           // Loop through all the ticket fields in accountB
-          JSON.parse(body).forEach(function(ticketField){
+          JSON.parse(body).ticket_fields.forEach(function(ticketField){
           /**
            * Using the names of fields now stored in foundTicketFields,
            * find where the currentTicketField in accountB matches
@@ -147,17 +146,15 @@ objectsToCreate.forEach(function(object){
            * property to the newTicketFields array
            */
 
-          object.ticket_field_ids = newTicketFields;
+          objectToClone.ticket_field_ids = newTicketFields;
 
           // Create the ticket form using zdrequest
-
-          // zdrequest(accountB, object, 'POST', objectToClone);
           });
+          zdrequest(accountB, object, 'POST', objectToClone);
         });
-
         // 
       }else{
-        // zdrequest(accountB, object, 'POST', objectToClone);
+        zdrequest(accountB, object, 'POST', objectToClone);
       }
     });
   }).then(function(){
