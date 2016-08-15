@@ -72,7 +72,6 @@ function findObjectFromDependency(dependency) {
 /**
  * Using objectsToCreate, clone chosen objects...
  */
-
 objectsToCreate.forEach(function(object){
   var toClone = [];
   zdrequest(accountA, object, 'GET').then(function(result){
@@ -82,44 +81,45 @@ objectsToCreate.forEach(function(object){
       /**
        * Logic for cloning a ticket form
        */
-      console.log(objectToClone);
       if(object.name == 'ticket_forms'){
-        // Array to store all the names of the ticket fields found from accountA
-        var foundTicketFieldsPromises = [];
-        var foundTicketFields = [];
-        var accountBTicketFields = [];
+        setTimeout(function(){
+          // Array to store all the names of the ticket fields found from accountA
+          var foundTicketFieldsPromises = [];
+          var foundTicketFields = [];
+          var accountBTicketFields = [];
 
-        // Array to store the new ticket field ids for the current form
-        var newTicketFields = [];
+          // Array to store the new ticket field ids for the current form
+          var newTicketFields = [];
 
-        getAllTicketFieldsFromAccountB().then(function(a){
-          accountBTicketFields = a;
+          getAllTicketFieldsFromAccountB().then(function(a){
+            accountBTicketFields = a;
 
-          // Get all the ticket_field_ids from the ticket form
-          objectToClone.ticket_field_ids.forEach(function(ticketFieldId){
-            foundTicketFieldsPromises.push(getTicketFieldFromAccountA(ticketFieldId));
-          });
+            // Get all the ticket_field_ids from the ticket form
+            objectToClone.ticket_field_ids.forEach(function(ticketFieldId){
+              foundTicketFieldsPromises.push(getTicketFieldFromAccountA(ticketFieldId));
+            });
 
-          Promise.all(foundTicketFieldsPromises).then(function(result){
-            foundTicketFields = result;
-          }).then(function(){
-            foundTicketFields.forEach(function(ticketFieldA){
-              accountBTicketFields.forEach(function(ticketFieldB){
-               if(ticketFieldB.raw_title == ticketFieldA) {
-                  newTicketFields.push(ticketFieldB.id);
-                }
+            Promise.all(foundTicketFieldsPromises).then(function(result){
+              foundTicketFields = result;
+            }).then(function(){
+              foundTicketFields.forEach(function(ticketFieldA){
+                accountBTicketFields.forEach(function(ticketFieldB){
+                if(ticketFieldB.raw_title == ticketFieldA) {
+                    newTicketFields.push(ticketFieldB.id);
+                  }
+                });
+              });
+              objectToClone.ticket_field_ids = newTicketFields;
+              zdrequest(accountB, object, 'POST', objectToClone).then(function(){
+                console.log(`${object.title} - ${objectToClone.name} cloned!`);
               });
             });
-            objectToClone.ticket_field_ids = newTicketFields;
-            // zdrequest(accountB, object, 'POST', objectToClone).then(function(){
-            //   console.log(`${object.title} cloned!`); 
-            // });
           });
-        });
+        }.bind(this), 2000);
       }else{
-        // zdrequest(accountB, object, 'POST', objectToClone).then(function(){
-        //   console.log(`${object.title} cloned!`);    
-        // });
+        zdrequest(accountB, object, 'POST', objectToClone).then(function(){
+          console.log(`${object.title} cloned!`);   
+        });
       }
     });
   });
@@ -136,7 +136,7 @@ function getTicketFieldFromAccountA(id) {
     };
 
     request(options, function(err, res, body){
-      if (err) { console.rejeectlog(err); }
+      if (err) { reject(err); }
       fufill(JSON.parse(body).ticket_field.raw_title);
     });
   });
