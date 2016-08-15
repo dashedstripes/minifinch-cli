@@ -34,7 +34,7 @@ var createTicketForms = function (object, objectToClone) {
         });
         objectToClone.ticket_field_ids = newTicketFields;
         zdrequest(accountB, object, 'POST', objectToClone).then(function(){
-          console.log(`${object.title} - ${objectToClone.name} cloned!`);
+          console.log(`${object.title} cloned!`);
         });
       });
     });
