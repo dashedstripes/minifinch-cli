@@ -7,21 +7,21 @@ const accountB = require('../config/config').accountB;
 var createTicketForms = function (object, objectToClone) {
   setTimeout(function(){
     // Array to store all the names of the ticket fields found from accountA
+    var accountBTicketFields = [];
     var foundTicketFieldsPromises = [];
     var foundTicketFields = [];
-    var accountBTicketFields = [];
 
     // Array to store the new ticket field ids for the current form
     var newTicketFields = [];
 
     getAllTicketFieldsFromAccountB().then(function(a){
       accountBTicketFields = a;
-
+    }).then(function(){
       // Get all the ticket_field_ids from the ticket form
       objectToClone.ticket_field_ids.forEach(function(ticketFieldId){
         foundTicketFieldsPromises.push(getTicketFieldFromAccountA(ticketFieldId));
       });
-
+    }).then(function() {
       Promise.all(foundTicketFieldsPromises).then(function(result){
         foundTicketFields = result;
       }).then(function(){
