@@ -47,17 +47,12 @@ const ticket_forms = {
   ]
 }
 
-const brands = {
-  title: 'Brands',
-  name: constants.brands,
-  dependencies: []
-};
-
 const users = {
   title: 'Users',
-  name: constants.users,
+  name: 'users',
+  singular: 'user',
   dependencies: [
-    constants.user_fields
+    'user_fields'
   ]
 }
 
@@ -119,12 +114,11 @@ const sla = {
 module.exports = [
   groups,
   organizations,
-  brands,
   ticket_fields,
   user_fields,
   organization_fields,
   ticket_forms,
-  // users,
+  users,
   // triggers,
   // macros,
   // views,
