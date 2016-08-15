@@ -82,85 +82,82 @@ objectsToCreate.forEach(function(object){
       /**
        * Logic for cloning a ticket form
        */
+      console.log(objectToClone);
       if(object.name == 'ticket_forms'){
         // Array to store all the names of the ticket fields found from accountA
+        var foundTicketFieldsPromises = [];
         var foundTicketFields = [];
+        var accountBTicketFields = [];
 
         // Array to store the new ticket field ids for the current form
         var newTicketFields = [];
 
-        // Get all the ticket_field_ids from the ticket form
-        objectToClone.ticket_field_ids.forEach(function(ticketFieldId){
-          /**
-           * Loop through each ticket field id and make a request to accountA
-           * with the ticket field id to get the name of the field
-           * then put them into an array (foundTicketFields)
-           */
+        getAllTicketFieldsFromAccountB().then(function(a){
+          accountBTicketFields = a;
 
-          var options = {
-            headers: {
-              Authorization: 'Basic ' + new Buffer(accountA.email + '/token:' + accountA.token).toString('base64')
-            },
-            url: `https://${accountA.subdomain}.zendesk.com/api/v2/ticket_fields/${ticketFieldId}.json`,
-            method: 'GET'
-          };
+          // Get all the ticket_field_ids from the ticket form
+          objectToClone.ticket_field_ids.forEach(function(ticketFieldId){
+            foundTicketFieldsPromises.push(getTicketFieldFromAccountA(ticketFieldId));
+          });
 
-          request(options, function(err, res, body){
-            if (err) { console.log(err); }
-            foundTicketFields.push(JSON.parse(body).ticket_field.raw_title);
+          Promise.all(foundTicketFieldsPromises).then(function(result){
+            foundTicketFields = result;
+          }).then(function(){
+            foundTicketFields.forEach(function(ticketFieldA){
+              accountBTicketFields.forEach(function(ticketFieldB){
+               if(ticketFieldB.raw_title == ticketFieldA) {
+                  newTicketFields.push(ticketFieldB.id);
+                }
+              });
+            });
+            objectToClone.ticket_field_ids = newTicketFields;
+            // zdrequest(accountB, object, 'POST', objectToClone).then(function(){
+            //   console.log(`${object.title} cloned!`); 
+            // });
           });
         });
-
-        // Get all the ticket fields from accountB
-
-        var options = {
-          headers: {
-            Authorization: 'Basic ' + new Buffer(accountB.email + '/token:' + accountB.token).toString('base64')
-          },
-          url: `https://${accountB.subdomain}.zendesk.com/api/v2/ticket_fields.json`,
-          method: 'GET'
-        };
-
-        request(options, function(err, res, body){
-          if (err) { console.log(err); }
-          // Loop through all the ticket fields in accountB
-          JSON.parse(body).ticket_fields.forEach(function(ticketField){
-          /**
-           * Using the names of fields now stored in foundTicketFields,
-           * find where the currentTicketField in accountB matches
-           */
-
-          foundTicketFields.forEach(function(foundTicketField){
-            /**
-             * When a name from foundTicketFields matches the name from 
-             * the currentTicketField, get the id from currentTicketField 
-             * and add it to newTicketFields
-             */
-            if(ticketField.raw_title == foundTicketField) {
-              newTicketFields.push(ticketField.id);
-            }
-          });
-
-          /**
-           * Once all is complete, set the ticket forms ticket_field_ids
-           * property to the newTicketFields array
-           */
-
-          objectToClone.ticket_field_ids = newTicketFields;
-
-          // Create the ticket form using zdrequest
-          });
-          zdrequest(accountB, object, 'POST', objectToClone);
-        });
-        // 
       }else{
-        zdrequest(accountB, object, 'POST', objectToClone);
+        // zdrequest(accountB, object, 'POST', objectToClone).then(function(){
+        //   console.log(`${object.title} cloned!`);    
+        // });
       }
     });
-  }).then(function(){
-    console.log(`${object.title} cloned!`);
   });
 });
+
+function getTicketFieldFromAccountA(id) {
+  return new Promise(function(fufill, reject){
+    var options = {
+      headers: {
+        Authorization: 'Basic ' + new Buffer(accountA.email + '/token:' + accountA.token).toString('base64')
+      },
+      url: `https://${accountA.subdomain}.zendesk.com/api/v2/ticket_fields/${id}.json`,
+      method: 'GET'
+    };
+
+    request(options, function(err, res, body){
+      if (err) { console.rejeectlog(err); }
+      fufill(JSON.parse(body).ticket_field.raw_title);
+    });
+  });
+};
+
+function getAllTicketFieldsFromAccountB() {
+  return new Promise(function(fufill, reject){
+    var options = {
+      headers: {
+        Authorization: 'Basic ' + new Buffer(accountB.email + '/token:' + accountB.token).toString('base64')
+      },
+      url: `https://${accountB.subdomain}.zendesk.com/api/v2/ticket_fields.json`,
+      method: 'GET'
+    };
+
+    request(options, function(err, res, body){
+      if (err) { reject(err); }
+      fufill(JSON.parse(body).ticket_fields);
+    });
+  });
+};
 
 /**
  * Function to create a request to zendesk
