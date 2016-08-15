@@ -1,8 +1,8 @@
 const Promise = require('promise');
 const request = require('request');
-const zdrequest = require('../zdrequest');
-const accountA = require('../config').accountA;
-const accountB = require('../config').accountB;
+const zdrequest = require('../libs/zdrequest');
+const accountA = require('../config/config').accountA;
+const accountB = require('../config/config').accountB;
 
 var createTicketForms = function (object, objectToClone) {
   setTimeout(function(){
