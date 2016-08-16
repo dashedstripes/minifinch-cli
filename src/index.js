@@ -3,7 +3,7 @@ const readlineSync = require('readline-sync');
 const request = require('request');
 const zdrequest = require('./libs/zdrequest');
 const models = require('./config/models');
-const createTicketForms = require('./objects/ticket_forms');
+const TicketForms = require('./objects/ticket_forms');
 
  var Minifinch = function () {
 
@@ -23,7 +23,10 @@ const createTicketForms = require('./objects/ticket_forms');
   let selectedObjects = [];
   let objectsToCreate = [];
 
+  let ticketForms;
+
   this.start = function() {
+    ticketForms = new TicketForms(accounts);
     getSelectionFromUser();
     organizeDependencies();
     createObjects();
@@ -72,7 +75,7 @@ const createTicketForms = require('./objects/ticket_forms');
       }).then(function(){
         toClone.forEach(function(objectToClone){
           if(object.name == 'ticket_forms'){
-            createTicketForms(object, objectToClone);
+            ticketForms.create(object, objectToClone);
           }else{
             zdrequest(accounts.b, object, 'POST', objectToClone).then(function(){
               console.log(`${object.title} cloned!`);   
