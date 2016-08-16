@@ -1,5 +1,3 @@
-const constants = require('./constants');
-
 const groups = {
   title: 'Groups',
   name: 'groups',
@@ -58,56 +56,56 @@ const users = {
 
 const triggers = {
   title: 'Triggers',
-  name: constants.triggers,
+  name: 'triggers',
   dependencies: [
-    constants.ticket_fields,
-    constants.brands,
-    constants.groups,
-    constants.organizations
+    'ticket_fields',
+    'brands',
+    'groups',
+    'organizations'
   ]
 }
 
 const macros = {
   title: 'Macros',
-  name: constants.macros,
+  name: 'macros',
   dependencies: [
-    constants.ticket_fields,
-    constants.brands,
-    constants.groups,
-    constants.organizations
+    'ticket_fields',
+    'brands',
+    'groups',
+    'organizations'
   ]
 };
 
 const views = {
   title: 'Views',
-  name: constants.views,
+  name: 'views',
   dependencies: [
-    constants.ticket_fields,
-    constants.brands,
-    constants.groups,
-    constants.organizations
+    'ticket_fields',
+    'brands',
+    'groups',
+    'organizations'
   ]
 }
 
 const automations = {
   title: 'Automations',
-  name: constants.automations,
+  name: 'automations',
   dependencies: [
-    constants.ticket_fields,
-    constants.brands,
-    constants.groups,
-    constants.organizations
+    'ticket_fields',
+    'brands',
+    'groups',
+    'organizations'
   ]
 }
 
 const sla = {
   title: 'SLA',
-  name: constants.sla,
+  name: 'sla',
   dependencies: [
-    constants.ticket_fields,
-    constants.brands,
-    constants.groups,
-    constants.organizations
+    'ticket_fields',
+    'brands',
+    'groups',
+    'organizations'
   ]
 }
 

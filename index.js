@@ -1,13 +1,18 @@
+// Dependencies
 const Promise = require('promise');
 const readlineSync = require('readline-sync');
 const request = require('request');
 const zdrequest = require('./libs/zdrequest');
-const models = require('./config/models');
-const accountA = require('./config/config').accountA;
-const accountB = require('./config/config').accountB;
 
+// Config
+const models = require('./config/models');
+const accountA = require('./config/accounts').accountA;
+const accountB = require('./config/accounts').accountB;
+
+// Objects
 const createTicketForms = require('./objects/ticket_forms');
 
+// Array to keep track of what is being created
 let selectedObjects = [];
 let objectsToCreate = [];
 

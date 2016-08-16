@@ -3,6 +3,7 @@ const request = require('request');
 
 /**
  * Function to create a request to zendesk
+ * Make GET and POST requests to uris with singular or plural names
  */
 
 var zdrequest = function (account, object, method, data) {
