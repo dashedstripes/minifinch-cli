@@ -1,111 +1,86 @@
-// Dependencies
 const Promise = require('promise');
 const readlineSync = require('readline-sync');
 const request = require('request');
 const zdrequest = require('./libs/zdrequest');
-
-// Config
 const models = require('./config/models');
-const accountA = require('./config/accounts').accountA;
-const accountB = require('./config/accounts').accountB;
-
-// Objects
 const createTicketForms = require('./objects/ticket_forms');
 
-// Array to keep track of what is being created
-let selectedObjects = [];
-let objectsToCreate = [];
-
-/**
- * Initialization function
- */
-var start = function() {
-  getUserInput();
-  createDependencyTree();
-  findObjectFromDependency();
-  createObjects();
-};
-
-/**
- * Ask user for objects to clone,
- * push all selected objects to the selectedObjects array
- */ 
-
-function getUserInput() {
-  for(var object in models){
-    var response = readlineSync.question(`${models[object].title}? (y/n) `);
-    if(response == 'y') {
-      selectedObjects.push(models[object]);
+let minifinch = {
+  accounts: {
+    a: {
+      subdomain: 'z3nminifincha',
+      email: 'agray@zendesk.com',
+      token: 'snm5S8KZ8ewNV3FajbccERTSaIyN5Y2q4lyxo45W'
+    },
+    b: {
+      subdomain: 'z3nminifinchb',
+      email: 'agray@zendesk.com',
+      token: 'JhSUuQRmQxK6Ho4zjqy8buuijkMc1UXEsmDuliab'
     }
-  }
-}
+  },
 
-/** 
- * Loop through each selected object
- * add objects to create with dependencies
- * starting with objects with no dependencies and
- * finishing with ones with the most dependencies
-*/
+  selectedObjects: [],
+  objectsToCreate: [],
 
-function createDependencyTree() {
-  selectedObjects.forEach(function(object){
-    // if object is not in objectsToCreate array
-    if(objectsToCreate.indexOf(object) == -1){
-      // check if object has any dependencies
-      if(object.dependencies.length != 0) {
-        // Loop through each dependency
-        object.dependencies.forEach(function(dependency){
-          var currentDependency = findObjectFromDependency(dependency);
-          // if dependency is not in objectsToCreate
-          if(objectsToCreate.indexOf(currentDependency) == -1){
-            objectsToCreate.push(currentDependency);
-          }
-        });
-        objectsToCreate.push(object);
-      }else{
-        objectsToCreate.push(object);
+  start: function() {
+    this.getSelectionFromUser();
+    this.organizeDependencies();
+    // this.createObjects();
+  },
+
+  getSelectionFromUser: function() {
+    for(let object in models){
+      let response = readlineSync.question(`${models[object].title}? (y/n) `);
+      if(response == 'y') {
+        this.selectedObjects.push(models[object]);
       }
     }
-  });
-}
+  },
 
-/**
- * Using the dependency name from an object, 
- * find the original object from models
- */
-function findObjectFromDependency(dependency) {
-  for(var object in models){
-    if(models[object].name == dependency) {
-      return models[object];
+  organizeDependencies: function() {
+    this.selectedObjects.forEach(function(object){
+      if(this.objectsToCreate.indexOf(object) == -1){
+        if(object.dependencies.length != 0) {
+          object.dependencies.forEach(function(dependency){
+            var currentDependency = this.findObjectFromDependency(dependency);
+            if(this.objectsToCreate.indexOf(currentDependency) == -1){
+              this.objectsToCreate.push(currentDependency);
+            }
+          }.bind(this));
+          this.objectsToCreate.push(object);
+        }else{
+          this.objectsToCreate.push(object);
+        }
+      }
+    }.bind(this));
+  },
+
+  findObjectFromDependency: function(dependency) {
+    for(var object in models){
+      if(models[object].name == dependency) {
+        return models[object];
+      }
     }
+  },
+
+  createObjects: function() {
+    this.objectsToCreate.forEach(function(object){
+      var toClone = [];
+      zdrequest(this.accounts.a, object, 'GET').then(function(result){
+        toClone = JSON.parse(result)[object.name];
+      }).then(function(){
+        toClone.forEach(function(objectToClone){
+          if(object.name == 'ticket_forms'){
+            createTicketForms(object, objectToClone);
+          }else{
+            zdrequest(this.accounts.b, object, 'POST', objectToClone).then(function(){
+              console.log(`${object.title} cloned!`);   
+            });
+          }
+        });
+      });
+    });
   }
 }
 
-/**
- * Using objectsToCreate, clone chosen objects...
- */
-function createObjects() {
-  objectsToCreate.forEach(function(object){
-    var toClone = [];
-    zdrequest(accountA, object, 'GET').then(function(result){
-      toClone = JSON.parse(result)[object.name];
-    }).then(function(){
-      toClone.forEach(function(objectToClone){
-        /**
-         * Logic for cloning a ticket form
-         */
-        if(object.name == 'ticket_forms'){
-          createTicketForms(object, objectToClone);
-        }else{
-          zdrequest(accountB, object, 'POST', objectToClone).then(function(){
-            console.log(`${object.title} cloned!`);   
-          });
-        }
-      });
-    });
-  });
-}
-
-module.exports = {
-  start: start
-};
+module.exports = minifinch;
