@@ -1,5 +1,9 @@
 # Minifinch CLI
 
+## Prerequisites
+
+- [NodeJS v6.3+](https://nodejs.org/en/)
+
 ## Installation
 
 Clone this repo somewhere safe on your machine, cd into it, then run the following:
