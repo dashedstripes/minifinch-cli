@@ -56,8 +56,8 @@ const TicketForms = require('./objects/ticket_forms');
     accounts.b.email = readlineSync.question('What is the email? ');
     accounts.b.token = readlineSync.question('What is the token? ');
     console.log('');
-
-    console.log('Now, select which objects you would like to clone:')
+    
+    console.log('Now, select which objects you would like to clone:');
   };
 
   function getSelectionFromUser() {
