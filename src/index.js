@@ -35,14 +35,12 @@ const TicketForms = require('./objects/ticket_forms');
   };
 
   function getAccountInfo() {
-    console.log(`  __  __ _       _  __ _            _     
- |  \/  (_)     (_)/ _(_)          | |    
- | \  / |_ _ __  _| |_ _ _ __   ___| |__  
- | |\/| | | '_ \| |  _| | '_ \ / __| '_ \ 
- | |  | | | | | | | | | | | | | (__| | | |
- |_|  |_|_|_| |_|_|_| |_|_| |_|\___|_| |_|
-                                          
-                                          `);
+    console.log(`                                 
+ _____ _     _ ___ _         _   
+|     |_|___|_|  _|_|___ ___| |_ 
+| | | | |   | |  _| |   |  _|   |
+|_|_|_|_|_|_|_|_| |_|_|_|___|_|_|
+                                 `);
     console.log('First, enter the details of the account you want to clone from:');
     console.log('');
 
