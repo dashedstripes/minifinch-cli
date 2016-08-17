@@ -27,9 +27,39 @@ const TicketForms = require('./objects/ticket_forms');
 
   this.start = function() {
     ticketForms = new TicketForms(accounts);
+
+    getAccountInfo();
     getSelectionFromUser();
     organizeDependencies();
     createObjects();
+  };
+
+  function getAccountInfo() {
+    console.log(`  __  __ _       _  __ _            _     
+ |  \/  (_)     (_)/ _(_)          | |    
+ | \  / |_ _ __  _| |_ _ _ __   ___| |__  
+ | |\/| | | '_ \| |  _| | '_ \ / __| '_ \ 
+ | |  | | | | | | | | | | | | | (__| | | |
+ |_|  |_|_|_| |_|_|_| |_|_| |_|\___|_| |_|
+                                          
+                                          `);
+    console.log('First, enter the details of the account you want to clone from:');
+    console.log('');
+
+    accounts.a.subdomain = readlineSync.question('What is the subdomain? ');
+    accounts.a.email = readlineSync.question('What is the email? ');
+    accounts.a.token = readlineSync.question('What is the token? ');
+
+    console.log('');
+    console.log('Next, enter the details for the account you want to clone to:')
+    console.log('');
+
+    accounts.b.subdomain = readlineSync.question('What is the subdomain? ');
+    accounts.b.email = readlineSync.question('What is the email? ');
+    accounts.b.token = readlineSync.question('What is the token? ');
+    console.log('');
+
+    console.log('Now, select which objects you would like to clone:')
   };
 
   function getSelectionFromUser() {
