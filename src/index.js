@@ -70,14 +70,14 @@ const TicketForms = require('./objects/ticket_forms');
   function createObjects() {
     objectsToCreate.forEach(function(object){
       var toClone = [];
-      zdrequest(accounts.a, object, 'GET').then(function(result){
+      zdrequest.get(accounts.a, object.name).then(function(result){
         toClone = JSON.parse(result)[object.name];
       }).then(function(){
         toClone.forEach(function(objectToClone){
           if(object.name == 'ticket_forms'){
-            ticketForms.create(object, objectToClone);
+            // ticketForms.create(object, objectToClone);
           }else{
-            zdrequest(accounts.b, object, 'POST', objectToClone).then(function(){
+            zdrequest.post(accounts.b, object.name, object.singular, objectToClone).then(function(){
               console.log(`${object.title} cloned!`);   
             });
           }
