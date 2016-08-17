@@ -77,9 +77,9 @@ const TicketForms = require('./objects/ticket_forms');
           if(object.name == 'ticket_forms'){
             ticketForms.create(object, objectToClone);
           }else{
-            // zdrequest.post(accounts.b, object.name, object.singular, objectToClone).then(function(){
-            //   console.log(`${object.title} cloned!`);   
-            // });
+            zdrequest.post(accounts.b, object.name, object.singular, objectToClone).then(function(){
+              console.log(`${object.title} cloned!`);   
+            });
           }
         });
       });
