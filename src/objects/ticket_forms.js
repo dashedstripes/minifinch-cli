@@ -46,9 +46,7 @@ var TicketForms = function(accounts) {
 
           objectToClone.ticket_field_ids = newTicketFields;
 
-          zdrequest.post(accounts.b, object.name, object.singular, objectToClone).then(function(){
-            console.log(`${object.title} cloned!`);
-          });
+          return zdrequest.post(accounts.b, object.name, object.singular, objectToClone);
 
         });
 
