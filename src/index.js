@@ -28,7 +28,7 @@ const TicketForms = require('./objects/ticket_forms');
   this.start = function() {
     ticketForms = new TicketForms(accounts);
 
-    // getAccountInfo();
+    getAccountInfo();
     getSelectionFromUser();
     organizeDependencies();
     createObjects();
