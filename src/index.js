@@ -28,7 +28,7 @@ const TicketForms = require('./objects/ticket_forms');
   this.start = function() {
     ticketForms = new TicketForms(accounts);
 
-    getAccountInfo();
+    // getAccountInfo();
     getSelectionFromUser();
     organizeDependencies();
     createObjects();
@@ -96,6 +96,7 @@ const TicketForms = require('./objects/ticket_forms');
   };
 
   function createObjects() {
+    var objectsToCreatePromises = [];
     objectsToCreate.forEach(function(object){
       var toClone = [];
       zdrequest.get(accounts.a, object.name).then(function(result){
@@ -105,11 +106,12 @@ const TicketForms = require('./objects/ticket_forms');
           if(object.name == 'ticket_forms'){
             ticketForms.create(object, objectToClone);
           }else{
-            zdrequest.post(accounts.b, object.name, object.singular, objectToClone).then(function(){
-              console.log(`${object.title} cloned!`);   
-            });
+            objectsToCreatePromises.push(zdrequest.post(accounts.b, object.name, object.singular, objectToClone));
           }
         });
+      });
+      Promise.all(objectsToCreatePromises).then(function(){
+        console.log(`${object.title} cloned!`); 
       });
     });
   }
