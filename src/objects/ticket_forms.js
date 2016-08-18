@@ -54,7 +54,7 @@ var TicketForms = function(accounts) {
 
       });
 
-    }.bind(this), 2000);
+    }.bind(this), 4000);
 
   };
 
