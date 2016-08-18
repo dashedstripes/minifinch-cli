@@ -104,14 +104,15 @@ const TicketForms = require('./objects/ticket_forms');
       }).then(function(){
         toClone.forEach(function(objectToClone){
           if(object.name == 'ticket_forms'){
-            objectsToCreatePromises.push(ticketForms.create(object, objectToClone));
+            ticketForms.create(object, objectToClone);
           }else{
             objectsToCreatePromises.push(zdrequest.post(accounts.b, object.name, object.singular, objectToClone));
           }
         });
-      });
-      Promise.all(objectsToCreatePromises).then(function(){
-        console.log(`${object.title} cloned!`); 
+      }).then(function() {
+        Promise.all(objectsToCreatePromises).then(function(){
+          console.log(`${object.title} cloned!`); 
+        });
       });
     });
   }
