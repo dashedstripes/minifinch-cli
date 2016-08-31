@@ -1,12 +1,15 @@
+// Dependencies
 const Promise = require('promise');
 const readlineSync = require('readline-sync');
 const request = require('request');
+// Custom dependencies
 const zdrequest = require('./libs/zdrequest');
 const models = require('./config/models');
 const TicketForms = require('./objects/ticket_forms');
 
- var Minifinch = function () {
+var Minifinch = function () {
 
+  // Account details to be filled in by user
   let accounts = {
     a: {
       subdomain: 'z3nminifincha',
@@ -20,11 +23,15 @@ const TicketForms = require('./objects/ticket_forms');
     }
   };
 
+  // Objects the user has selected
   let selectedObjects = [];
+  // All objects and dependencies that will be created
   let objectsToCreate = [];
 
+  // Store ticket forms object in ticketForms variable
   let ticketForms;
 
+  // Start function - minifinch is called from here
   this.start = function() {
     ticketForms = new TicketForms(accounts);
 
@@ -34,6 +41,8 @@ const TicketForms = require('./objects/ticket_forms');
     createObjects();
   };
 
+
+  // Ask user for account info
   function getAccountInfo() {
     console.log(`                                 
  _____ _     _ ___ _         _   
@@ -60,6 +69,7 @@ const TicketForms = require('./objects/ticket_forms');
     console.log('Now, select which objects you would like to clone:');
   };
 
+  // Iterate through each model and get selection from user
   function getSelectionFromUser() {
     for(let object in models){
       let response = readlineSync.question(`${models[object].title}? (y/n) `);
@@ -69,6 +79,10 @@ const TicketForms = require('./objects/ticket_forms');
     }
   };
 
+  /**
+   * Get any dependencies from objects the user has selected and
+   * save them into objectsToCreate
+   */
   function organizeDependencies() {
     selectedObjects.forEach(function(object){
       if(objectsToCreate.indexOf(object) == -1){
@@ -87,6 +101,10 @@ const TicketForms = require('./objects/ticket_forms');
     });
   };
 
+  /**
+   * Get the object that matches the dependency name
+   * @param {string} dependency
+   */
   function findObjectFromDependency(dependency) {
     for(var object in models){
       if(models[object].name == dependency) {
@@ -95,10 +113,12 @@ const TicketForms = require('./objects/ticket_forms');
     }
   };
 
+  // Create all objects from objectsToCreate array
   function createObjects() {
     var objectsToCreatePromises = [];
     objectsToCreate.forEach(function(object){
       var toClone = [];
+      // Get JSON list of current object from accountA
       zdrequest.get(accounts.a, object.name).then(function(result){
         toClone = JSON.parse(result)[object.name];
       }).then(function(){
