@@ -1,27 +1,15 @@
 # Minifinch CLI
 
-## Prerequisites
-
-- [NodeJS v6.3+](https://nodejs.org/en/)
-
-## Installation
-
-Clone this repo somewhere safe on your machine, cd into it, then run the following:
+## Running in production
+Running in production mode allows you to add your own account details at run time.
 
 ```
-$ chmod 755 install.sh
-$ ./install.sh
+$ npm start
 ```
 
-## Usage
-
-Run the following command and follow the on screen instructions.
+## Running in development
+Running the app in production will use your environment variables to set the account details.
 
 ```
-$ minifinch
+$ npm run dev
 ```
-
-## Issues
-
-If you find a bug, or have a feature request - please add an issue here:
-https://github.com/dashedstripes/minifinch-cli/issues
