@@ -12,14 +12,14 @@ var Minifinch = function () {
   // Account details to be filled in by user
   let accounts = {
     a: {
-      subdomain: 'z3nminifincha',
-      email: 'agray@zendesk.com',
-      token: 'snm5S8KZ8ewNV3FajbccERTSaIyN5Y2q4lyxo45W'
+      subdomain: process.env.MINIFINCH_A_SUBDOMAIN,
+      email: process.env.MINIFINCH_A_EMAIL,
+      token: process.env.MINIFINCH_A_TOKEN
     },
     b: {
-      subdomain: 'z3nminifinchb',
-      email: 'agray@zendesk.com',
-      token: 'JhSUuQRmQxK6Ho4zjqy8buuijkMc1UXEsmDuliab'
+      subdomain: process.env.MINIFINCH_B_SUBDOMAIN,
+      email: process.env.MINIFINCH_B_EMAIL,
+      token: process.env.MINIFINCH_B_TOKEN
     }
   };
 
@@ -32,10 +32,13 @@ var Minifinch = function () {
   let ticketForms;
 
   // Start function - minifinch is called from here
-  this.start = function() {
+  this.start = function(isDev) {
     ticketForms = new TicketForms(accounts);
 
-    getAccountInfo();
+    if(!isDev) {
+      getAccountInfo();
+    }
+    
     getSelectionFromUser();
     organizeDependencies();
     createObjects();
